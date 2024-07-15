@@ -11,6 +11,7 @@ def get_weather(city):
 
     if response.status_code == 200:
         return response.text.strip()
+    
     else:
         return 'Error: City not found or service unavailable.'
 
@@ -32,10 +33,27 @@ def index():
     try:
         with open(template_path, 'r') as file:
             template = file.read()
+    
     except FileNotFoundError:
-        return "Error: Template file not found", 500
+        return 'Error: Template file not found', 500
     
     return render_template_string(template, weather=weather, error=error)
 
+@app.route('/info')
+def info():
+    template_path = os.path.join('C:/Users/ABC/Desktop/VsCode Projects/Python Projects/Python-Weather-With-Flask', 'Weather-template-InfoSection.html')
+
+    try:
+        with open(template_path, 'r') as file:
+            template = file.read()
+    
+    except FileNotFoundError:
+        return 'Error: Template file not found', 500
+    
+    return render_template_string(template)
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
+
+dont respond I can't explain now
