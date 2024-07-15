@@ -1,56 +1,108 @@
-import os
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            position: relative; 
+        }
 
-from flask import Flask, render_template_string, request
-from requests import get
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-app = Flask(__name__)
+        form {
+            margin-bottom: 20px;
+        }
 
-def get_weather(city):
-    city = city.replace(' ', '+')
-    url = f'http://wttr.in/{city}?format=2'
-    response = get(url)
+        input[type='text'] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 80%;
+        }
 
-    if response.status_code == 200:
-        return response.text.strip()
-    else:
-        return 'Error: City not found or service unavailable.'
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    weather = None
-    error = None
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px; 
+        }
     
-    if request.method == 'POST':
-        city = request.form['city']
-        weather = get_weather(city)
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .weather {
+            margin-top: 20px;
+        }
+
+        .Info-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .Info-button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script>
+        function showError(error) {
+            alert(error);
+        }
+
+        function redirectToInfo() {
+            window.location.href = "/info";
+        }
+    </script>
+</head>
+<body>
+    <div class='container'>
+        <h1>Weather App</h1>
         
-        if 'Error' in weather:
-            error = weather
-            weather = None
+        <form method='post'>
+            <input type='text' name='city' placeholder='Enter city name' required>
+            <button type='submit'>Get Weather</button>
+        </form>
+        
+        {% if weather %}
+        
+        <div class='weather'>
+            <h2>{{ weather }}</h2>
+        </div>
 
-    template_path = os.path.join('C:/Users/ABC/Desktop/VsCode Projects/Python Projects/Python-Weather-With-flask.py', 'weather_template.html')
+        {% endif %}
+        {% if error %}
+        
+        <script>
+            showError("{{ error }}");
+        </script>
+        
+        {% endif %}
+    </div>
 
-    try:
-        with open(template_path, 'r') as file:
-            template = file.read()
-    
-    except FileNotFoundError:
-        return 'Error: Template file not found', 500
-    
-    return render_template_string(template, weather=weather, error=error)
-
-@app.route('/tutorial')
-def info():
-    template_path = os.path.join('C:/Users/ABC/Desktop/VsCode Projects/Python Projects/Python-Weather-With-flask.py', 'Weather-template-tutorialSection.html')
-
-    try:
-        with open(template_path, 'r') as file:
-            template = file.read()
-    
-    except FileNotFoundError:
-        return 'Error: Template file not found', 500
-    
-    return render_template_string(template)
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    <button class="Info-button" onclick="redirectToInfo()">Info</button>
+</body>
+</html>
